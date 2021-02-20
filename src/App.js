@@ -9,7 +9,6 @@ function App() {
 
   const [pokemon, setPokemon] = useState([]);
   const [pokemonData, setPokemonData] = useState([]);
-
   const [currentURL, setCurrentURL] = useState(url);
   const [newURL, setNewURL] = useState();
   const [prevURL, setPrevURL] = useState();
@@ -17,28 +16,40 @@ function App() {
 
   useEffect(() => {
     setLoading(true);
-    
+
     let cancel;
     axios.get(currentURL, {
       cancelToken: new axios.CancelToken(c => cancel = c)
 
     }).then(res => {
       console.log(res.data);
-      const pokemonDataUrls = [];
 
       setLoading(false);
       setNewURL(res.data.next);
       setPrevURL(res.data.previous);
       setPokemon(res.data.results.map(p => p.name));
 
-      pokemonDataUrls.push(res.data.results.map(u => u.url));
+      let fetchPokemondata = (pokemon) => {
+        let url = pokemon.url;
 
-      setPokemonData(res.data.results.map(d => d.url));
-    });
+        fetch(url).then(res => res.json()).then(pokeData => {
+          console.log(pokeData);
+        })
+
+      }
+
+      res.data.results.map(individualPokemonUrls => {
+        
+        
+      });
+
+    })
     return () => {
       cancel()
     }
   }, [currentURL]);
+
+
 
   function nextPage() {
     setCurrentURL(newURL);
@@ -48,16 +59,30 @@ function App() {
     setCurrentURL(prevURL);
   }
 
+  // function fetchPokemonData(pokemon) {
+  //   let url = pokemon.url;
+  //   fetch(url).then(pokeData => {
+  //     console.log(pokeData)
+  //   });
+  // };
+
   if (loading) {
-    return "Loading ...";
+    return <div>Loading...</div>;
+  } else {
+    return (
+      <div>
+        {/* <Pokemons pokemonData={ pokemonData } /> */}
+        <div>
+          {pokemonData.map(poke => {
+            <div key={poke}>{poke}</div>
+          })}
+        </div>
+
+        <Page nextPage={newURL ? nextPage : null} prevPage={prevURL ? prevPage : null} />
+      </div>
+    );
   }
 
-  return (
-    <div>
-      <Pokemons pokemon={ pokemon } pokemonData={ pokemonData }/>
-      <Page nextPage={newURL ? nextPage : null} prevPage={prevURL ? prevPage : null }/>
-    </div>
-  );
 }
 // const [pokemon, setPokemon] = useState([]);
 //   const [pokemonData, setPokemonData] = useState([]);
