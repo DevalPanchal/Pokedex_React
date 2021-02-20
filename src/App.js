@@ -28,6 +28,14 @@ function App() {
       })
   }, [currentPageUrl]);
 
+  function goToNextPage(url) {
+    currentPageUrl(nextPageUrl);
+  }
+
+  function goToPreviousPage(url) {
+    currentPageUrl(previousPageUrl);
+  }
+
 
   if (error) {
     return <div>Error: {error.message}</div>
