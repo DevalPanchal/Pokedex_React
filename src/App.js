@@ -16,13 +16,17 @@ function App() {
     fetch(url).then(res => res.json())
       .then((data) => {
         setLoading(false);
+
         setPokemon(data.results);
+        setNextPageUrl(data.results.next);
+        setPreviousPageUrl(data.results.previous);
+        
         console.log(data);
       }, (error) => {
         setLoading(false);
         setError(error);
       })
-  }, [])
+  }, [currentPageUrl]);
 
 
   if (error) {
