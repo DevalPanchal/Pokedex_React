@@ -30,17 +30,17 @@ function App() {
       setPokemon(res.data.results.map(p => p.name));
 
       let fetchPokemondata = (pokemon) => {
+        // get individual pokemons url, => pokemon.url
         let url = pokemon.url;
 
+        // fetch the url and store in json and log the data
         fetch(url).then(res => res.json()).then(pokeData => {
           console.log(pokeData);
         })
-
       }
 
       res.data.results.map(individualPokemonUrls => {
-        
-        
+        fetchPokemondata(individualPokemonUrls);
       });
 
     })
@@ -74,7 +74,7 @@ function App() {
         {/* <Pokemons pokemonData={ pokemonData } /> */}
         <div>
           {pokemonData.map(poke => {
-            <div key={poke}>{poke}</div>
+            <div key={poke}>{poke.name}</div>
           })}
         </div>
 
