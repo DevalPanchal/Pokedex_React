@@ -1,67 +1,79 @@
-import React, { useState, useEffect } from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
-import Page from './Components/Page';
 
+const url = "https://pokeapi.co/api/v2/pokemon";  
 
-function App() {
-  const url = "https://pokeapi.co/api/v2/pokemon";
+class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      pokemon: [],
+      pokemonData: [],
+      currentPageUrl: url,
+      nextPageUrl: '',
+      previousPageUrl: ''
+    }
+    //this.handleClick = this.handleClick.bind(this);
+  }
 
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [pokemon, setPokemon] = useState([]);
-  const [currentPageUrl, setCurrentPageUrl] = useState(url);
-  const [nextPageUrl, setNextPageUrl] = useState();
-  const [previousPageUrl, setPreviousPageUrl] = useState();
-
-  useEffect(() => {
-    setLoading(true);
-    let cancel;
-    axios.get(currentPageUrl, {
-      cancelToken: new axios.CancelToken(c => cancel = c)
+  componentDidMount() {
+    // fetch data from the url
+    fetch(url)
+    // get the data in json form
+    .then(res => res.json())
+    .then(data => {
+      // set the individual pokemon state to data.results
+      this.setState( { 
+        pokemon: data.results, 
+        nextPageUrl: data.next, 
+        previousPageUrl: data.previous 
+      }, () => {
+        // loop through each pokemon
+        this.state.pokemon.map((p) => {
+          // fetch the url associated in their object
+          fetch(p.url)
+          // get the data in json form
+          .then(res => res.json())
+          .then(pokeData => {
+            // make a temporary variable of array data type
+            var details = this.state.pokemonData;
+            // push the individual pokemon data to the temporary array
+            details.push(pokeData);
+            // set the state for the pokemonData ([]) to the temporary array
+            this.setState( { pokemonData: details } );
+          }) 
+          .catch(err => console.error(err));
+        })
+      } )
+      console.log(data.next);
     })
-    fetch(url).then(res => res.json())
-      .then((data) => {
-        setLoading(false);
-
-        setPokemon(data.results);
-        setNextPageUrl(data.next);
-        setPreviousPageUrl(data.previous);
-        
-        console.log(data);
-      }, (error) => {
-        setLoading(false);
-        setError(error);
-      });
-      return () => {
-        cancel();
-      }
-  }, [currentPageUrl]);
-
-  function goToNextPage() {
-    setCurrentPageUrl(nextPageUrl);
+    
+    .catch(err => console.error(err));
   }
+  
+  // handleClick() {
+  //   this.setState({ currentPageUrl: nextPageUrl });
+  // }
+  
+  render() {
+    
+    const { pokemonData } = this.state;
 
-  function goToPreviousPage() {
-    setCurrentPageUrl(previousPageUrl);
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>
-  } else if (loading) {
-    return <div>Loading...</div>
-  } else {
     return (
       <div>
-        <div>
-          {pokemon.map(p => (
-            <div key={p.id}>{p.name}</div>
-          ))}
+        {pokemonData.map((pokemon, _id) => (
+          <div key={pokemon.name}>{ pokemon.name }
+            <div></div>
+          </div>
           
-        </div>
-        <Page goToNextPage={ nextPageUrl ? goToNextPage : null } goToPreviousPage={ previousPageUrl ? goToPreviousPage : null } />
+        ))}
+        {/* <button onClick={ this.handleClick }>Previous</button> */}
+        {/* <button onClick={ this.goToNextPage }>Next</button> */}
       </div>
     );
   }
+    
+  
 }
 
 export default App;
