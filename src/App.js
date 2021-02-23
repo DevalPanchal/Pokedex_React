@@ -8,21 +8,35 @@ function App() {
   const url = "https://pokeapi.co/api/v2/pokemon/";
 
   const [pokemon, setPokemon] = useState([]);
+  const [pokemonData, setPokemonData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPageUrl, setCurrentPageUrl] = useState(url);
   const [nextPageUrl, setNextPageUrl] = useState();
   const [previousPageUrl, setPreviousPageUrl] = useState();
   const [error, setError] = useState(null);
 
+  let pokemonDetails = [];
+
   useEffect(() => {
     setLoading(true);
     axios.get(currentPageUrl)
     .then(res => {
+      
       setLoading(false);
       setNextPageUrl(res.data.next);
       setPreviousPageUrl(res.data.previous);
       setPokemon(res.data.results);
-    }).catch(err => {
+
+      // pokemon.map(p => {
+      //   axios.get(p.url)
+      //   .then(pokeData => {
+      //     var details = pokemonData;
+      //     details.push(pokeData);
+      //     pokemonData(details);
+      //   })
+      // })
+    })
+    .catch(err => {
       setLoading(false);
       setError(err);
     })
@@ -34,14 +48,14 @@ function App() {
   function goToPreviousPage() {
     setCurrentPageUrl(previousPageUrl);
   }
-
+  console.log(pokemonData);
   if (loading) {
     return <div>Loading...</div>
   }
   if (error) {
     return <div>Error: { error.message }</div>
   }
-
+  
   return (
     <div>
       {pokemon.map(pokemons => (
