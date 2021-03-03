@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Pokemons from './Components/Pokemons';
+//import Pokemons from './Components/Pokemons';
 import Pagination from './Components/Pagination';
-import axios from 'axios';
 
 
 function App() {
@@ -19,36 +18,68 @@ function App() {
 
   useEffect(() => {
     setLoading(true);
-    axios.get(currentPageUrl)
-    .then(res => {
-      
-      setLoading(false);
-      setNextPageUrl(res.data.next);
-      setPreviousPageUrl(res.data.previous);
-      setPokemon(res.data.results);
+    fetchPokemonList(currentPageUrl);
+    getPokemonData();
+  }, [currentPageUrl])
 
-      // pokemon.map(p => {
-      //   axios.get(p.url)
-      //   .then(pokeData => {
-      //     var details = pokemonData;
-      //     details.push(pokeData);
-      //     pokemonData(details);
-      //   })
-      // })
-    })
-    .catch(err => {
-      setLoading(false);
-      setError(err);
-    })
-  }, [currentPageUrl]);
+  async function fetchPokemonList(url) {
+    try {
+      let response = await fetch(url);
+      let data = await response.json();
+      
+      if (data) {
+        setLoading(false);
+        setPokemon(data.results);
+        const { previous, next } = data;
+        setPreviousPageUrl(previous);
+        setNextPageUrl(next);
+      }
+      
+    } catch (err) {
+      setError(error);
+    }
+  }
+
+  async function fetchPokemonData(id) {
+    try {
+
+      let response = await fetch(currentPageUrl + `${id}`);
+      let data = await response.json();
+
+      const name = data.name;
+      const height = data.height;
+      const weight = data.weight;
+
+      console.log(name);
+      console.log(height);
+      console.log(weight);
+
+      return data;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  function getPokemonData() {
+    
+    for (let i = 1; i <= 20; i++) {
+      fetchPokemonData(i);
+    }
+  }
+
+  
 
   function goToNextPage() {
-    setCurrentPageUrl(nextPageUrl);
+    if (nextPageUrl) {
+      setCurrentPageUrl(nextPageUrl);
+    }
   }
   function goToPreviousPage() {
-    setCurrentPageUrl(previousPageUrl);
+    if (previousPageUrl) {
+      setCurrentPageUrl(previousPageUrl);
+    }
   }
-  console.log(pokemonData);
+  
   if (loading) {
     return <div>Loading...</div>
   }
@@ -65,18 +96,33 @@ function App() {
     </div>
   );
 }
-// const [pokemon, setPokemon] = useState([]);
-//   const [pokemonData, setPokemonData] = useState([]);
-
-//   async function getPokemon() {
-//     const array = [];
-//     try {
-//       const url = "https://pokeapi.co/api/v2/pokemon/";
-//       const res = await axios.get(url);
-//       console.log(res.data);
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   }
 
 export default App;
+
+
+
+//useEffect(() => {
+  //   setLoading(true);
+  //   fetchPokemonList(url);
+  //   // axios.get(currentPageUrl)
+  //   // .then(res => {
+      
+  //   //   setLoading(false);
+  //   //   setNextPageUrl(res.data.next);
+  //   //   setPreviousPageUrl(res.data.previous);
+  //   //   setPokemon(res.data.results);
+
+  //   //   // pokemon.map(p => {
+  //   //   //   axios.get(p.url)
+  //   //   //   .then(pokeData => {
+  //   //   //     var details = pokemonData;
+  //   //   //     details.push(pokeData);
+  //   //   //     pokemonData(details);
+  //   //   //   })
+  //   //   // })
+  //   // })
+  //   // .catch(err => {
+  //   //   setLoading(false);
+  //   //   setError(err);
+  //   // })
+  // }, [currentPageUrl]);
