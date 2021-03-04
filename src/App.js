@@ -19,8 +19,8 @@ function App() {
   useEffect(() => {
     setLoading(true);
     fetchPokemonList(currentPageUrl);
-    getPokemonData();
-  }, [currentPageUrl])
+    
+  }, [currentPageUrl]);
 
   async function fetchPokemonList(url) {
     try {
@@ -60,15 +60,8 @@ function App() {
     }
   }
 
-  function getPokemonData() {
-    
-    for (let i = 1; i <= 20; i++) {
-      fetchPokemonData(i);
-    }
-  }
 
   
-
   function goToNextPage() {
     if (nextPageUrl) {
       setCurrentPageUrl(nextPageUrl);
@@ -98,31 +91,3 @@ function App() {
 }
 
 export default App;
-
-
-
-//useEffect(() => {
-  //   setLoading(true);
-  //   fetchPokemonList(url);
-  //   // axios.get(currentPageUrl)
-  //   // .then(res => {
-      
-  //   //   setLoading(false);
-  //   //   setNextPageUrl(res.data.next);
-  //   //   setPreviousPageUrl(res.data.previous);
-  //   //   setPokemon(res.data.results);
-
-  //   //   // pokemon.map(p => {
-  //   //   //   axios.get(p.url)
-  //   //   //   .then(pokeData => {
-  //   //   //     var details = pokemonData;
-  //   //   //     details.push(pokeData);
-  //   //   //     pokemonData(details);
-  //   //   //   })
-  //   //   // })
-  //   // })
-  //   // .catch(err => {
-  //   //   setLoading(false);
-  //   //   setError(err);
-  //   // })
-  // }, [currentPageUrl]);
