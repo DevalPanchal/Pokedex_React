@@ -1,91 +1,39 @@
 import React, { useState, useEffect } from 'react';
-//import Pokemons from './Components/Pokemons';
-import Pagination from './Components/Pagination';
-
 
 function App() {
   const url = "https://pokeapi.co/api/v2/pokemon/";
 
   const [pokemon, setPokemon] = useState([]);
-  const [pokemonData, setPokemonData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [currentPageUrl, setCurrentPageUrl] = useState(url);
-  const [nextPageUrl, setNextPageUrl] = useState();
-  const [previousPageUrl, setPreviousPageUrl] = useState();
-  const [error, setError] = useState(null);
-
-  let pokemonDetails = [];
+  const [currentUrl, setCurrentUrl] = useState(url);
 
   useEffect(() => {
-    setLoading(true);
-    fetchPokemonList(currentPageUrl);
-    
-  }, [currentPageUrl]);
-
-  async function fetchPokemonList(url) {
     try {
-      let response = await fetch(url);
-      let data = await response.json();
-      
-      if (data) {
-        setLoading(false);
+      async function fetchPokemonData(url) {
+        let response = await fetch(url);
+        let data = await response.json();
+
         setPokemon(data.results);
-        const { previous, next } = data;
-        setPreviousPageUrl(previous);
-        setNextPageUrl(next);
+        getEachPokemon();
       }
-      
-    } catch (err) {
-      setError(error);
-    }
-  }
-
-  async function fetchPokemonData(id) {
-    try {
-
-      let response = await fetch(currentPageUrl + `${id}`);
-      let data = await response.json();
-
-      const name = data.name;
-      const height = data.height;
-      const weight = data.weight;
-
-      console.log(name);
-      console.log(height);
-      console.log(weight);
-
-      return data;
+      fetchPokemonData(currentUrl);
     } catch (err) {
       console.error(err);
     }
+    
+  }, [currentUrl]);
+
+  function getEachPokemon() {
+    pokemon.forEach(poke => {
+      console.log(poke)
+    });
   }
 
-
-  
-  function goToNextPage() {
-    if (nextPageUrl) {
-      setCurrentPageUrl(nextPageUrl);
-    }
-  }
-  function goToPreviousPage() {
-    if (previousPageUrl) {
-      setCurrentPageUrl(previousPageUrl);
-    }
-  }
-  
-  if (loading) {
-    return <div>Loading...</div>
-  }
-  if (error) {
-    return <div>Error: { error.message }</div>
-  }
   
   return (
     <div>
-      {pokemon.map(pokemons => (
-        <div key={pokemons.name}>{pokemons.name}</div>
+      {pokemon.map(p => (
+        <div key={p.name}>{p.name}</div>
       ))}
-      <Pagination goToPreviousPage={previousPageUrl ? goToPreviousPage : null} goToNextPage={nextPageUrl ? goToNextPage : null} />
     </div>
   );
 }
