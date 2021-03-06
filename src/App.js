@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import Pokemon from './Components/Pokemon';
 
 function App() {
   const url = "https://pokeapi.co/api/v2/pokemon/";
@@ -8,32 +9,38 @@ function App() {
 
   useEffect(() => {
     try {
-      async function fetchPokemonData(url) {
+      async function fetchPokemonList(url) {
         let response = await fetch(url);
         let data = await response.json();
 
         setPokemon(data.results);
-        getEachPokemon();
+        
       }
-      fetchPokemonData(currentUrl);
+      fetchPokemonList(currentUrl);
+      
     } catch (err) {
       console.error(err);
     }
     
   }, [currentUrl]);
 
-  function getEachPokemon() {
-    pokemon.forEach(poke => {
-      console.log(poke)
-    });
+  async function fetchPokemonData() {
+    try {
+      let response = await fetch(url);
+      let data = response.json();
+
+
+
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  
+
+
   return (
     <div>
-      {pokemon.map(p => (
-        <div key={p.name}>{p.name}</div>
-      ))}
+      <Pokemon pokemon={ pokemon } />
     </div>
   );
 }
