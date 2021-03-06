@@ -15,13 +15,18 @@ function App() {
         let data = await response.json();
 
         setPokemon(data.results);
-        //setPokemonUrlList(data.results.map(p => p.url));
+        
+        return data;
+      }
+    
+      const forEachPokemon = () => {
+        pokemon.forEach(async poke => {
+          setPokemonData(await poke);
+          console.log(pokemonData);
+        });
       }
       fetchPokemonList(currentUrl);
-      pokemon.forEach(poke => {
-        fetchPokemonData(poke.url);
-      });
-      //fetchPokemonData(pokemon.map(p => p.url));
+      forEachPokemon();
     } catch (err) {
       console.error(err);
     }
@@ -32,7 +37,7 @@ function App() {
     try {
       let response = await fetch(url);
       let data = await response.json();
-      setPokemonData(data.results.map(p => p));
+      
       return data;
     } catch (error) {
       console.error(error);
