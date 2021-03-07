@@ -21,8 +21,7 @@ function App() {
     
       const forEachPokemon = () => {
         pokemon.forEach(async poke => {
-          setPokemonData(await poke);
-          console.log(pokemonData);
+          setPokemonData(poke.url);
         });
       }
       fetchPokemonList(currentUrl);
