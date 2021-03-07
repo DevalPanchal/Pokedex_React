@@ -15,34 +15,31 @@ function App() {
         let data = await response.json();
 
         setPokemon(data.results);
-        
         return data;
       }
-    
-      const forEachPokemon = () => {
-        pokemon.forEach(async poke => {
-          setPokemonData(poke.url);
-        });
-      }
       fetchPokemonList(currentUrl);
-      forEachPokemon();
+      
+      pokemon.forEach(pokeData => {
+        let details = [];
+        details = pokemonData;
+        details.push(pokeData);
+        setPokemonData(details);
+      });
+
     } catch (err) {
       console.error(err);
     }
-    
   }, [currentUrl]);
 
-  async function fetchPokemonData(url) {
+  async function fetchPokemonData() {
     try {
-      let response = await fetch(url);
-      let data = await response.json();
       
-      return data;
-    } catch (error) {
-      console.error(error);
+
+    } catch (err) {
+      console.error(err);
     }
   }
-  
+
   return (
     <div>
       {/* <Pokemon pokemon={ pokemon } /> */}
