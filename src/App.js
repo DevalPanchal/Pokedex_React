@@ -31,9 +31,13 @@ function App() {
     }
   }, [currentUrl]);
 
-  async function fetchPokemonData() {
+  async function fetchPokemonData(pokemonDetails) {
     try {
-      
+      pokemon.forEach(async pokeData => {
+        pokemonDetails = pokemonData;
+        pokemonDetails.push(pokeData);
+        setPokemonData(pokemonDetails);
+      });
 
     } catch (err) {
       console.error(err);
