@@ -18,31 +18,13 @@ function App() {
         return data;
       }
       fetchPokemonList(currentUrl);
-      
-      pokemon.forEach(pokeData => {
-        let details = [];
-        details = pokemonData;
-        details.push(pokeData);
-        setPokemonData(details);
-      });
 
     } catch (err) {
       console.error(err);
     }
   }, [currentUrl]);
 
-  async function fetchPokemonData(pokemonDetails) {
-    try {
-      pokemon.forEach(async pokeData => {
-        pokemonDetails = pokemonData;
-        pokemonDetails.push(pokeData);
-        setPokemonData(pokemonDetails);
-      });
-
-    } catch (err) {
-      console.error(err);
-    }
-  }
+  
 
   return (
     <div>
