@@ -24,12 +24,19 @@ function App() {
     }
   }, [currentUrl]);
 
-  
+  async function fetchPokemonData() {
+    // 1. map over [pokemon]
+    // 2.   fetch pokemon's url
+    // 3.   make a temporary array
+    // 4.   push fetched data to array
+    // 5.   [setPokemonData] to the array
+    // 6. complete
+  }
 
   return (
     <div>
       {/* <Pokemon pokemon={ pokemon } /> */}
-      {pokemonData.map(p => (
+      {pokemon.map(p => (
         <div key={ p.name }>{ p.name }</div>
       ))}
     </div>
