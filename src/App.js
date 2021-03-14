@@ -18,21 +18,28 @@ function App() {
         return data;
       }
       fetchPokemonList(currentUrl);
-
+      
     } catch (err) {
       console.error(err);
     }
   }, [currentUrl]);
 
-  async function fetchPokemonData() {
-    // 1. map over [pokemon]
-    // 2.   fetch pokemon's url
-    // 3.   make a temporary array
-    // 4.   push fetched data to array
-    // 5.   [setPokemonData] to the array
-    // 6. complete
-  }
+  // function fetchPokemonData() {
+  //   pokemon.map(async p => {
+  //     let response = await fetch(p.url);
+  //     let data = await response.json();
 
+  //     setPokemonData(data);
+  //     return;
+  //   });
+  //   // 1. map over [pokemon]
+  //   // 2.   fetch pokemon's url
+  //   // 3.   make a temporary array
+  //   // 4.   push fetched data to array
+  //   // 5.   [setPokemonData] to the array
+  //   // 6. complete
+  // }
+  // fetchPokemonData();
   return (
     <div>
       {/* <Pokemon pokemon={ pokemon } /> */}
