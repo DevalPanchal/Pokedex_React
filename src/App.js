@@ -1,11 +1,12 @@
 import React, { Component } from "react";
-
+import Pokemon from './Components/Pokemon';
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      pokemonList: []
+      pokemonList: [],
+      pokemonData: []
     }
   }
 
@@ -15,16 +16,37 @@ class App extends Component {
     .then(response => response.json())
     .then(data => {
       if (data) {
-        this.setState({pokemonList: data.results}, () => {})
+        this.setState({pokemonList: data.results}, () => {
+          this.state.pokemonList.map(pokemon => {
+            fetch(pokemon.url)
+            .then(response => response.json())
+            .then(data => {
+              if (data) {
+                var temp = this.state.pokemonData;
+                temp.push(data);
+                this.setState({ pokemonData: temp });
+              }
+            })
+            .catch(err => console.error(err));
+          })
+        })
       }
     })
-    .catch(err => console.err(err));
+    .catch(err => console.error(err));
   }
 
   render() {
+    const { pokemonList } = this.state;
+    const renderPokemonList = pokemonList.map((pokemon, index) => {
+      return (
+        <Pokemon pokemonList={pokemonList}/>
+      );
+    })
     return (
       <div>
-        <h1>Pokedex</h1>
+        <div>
+          { renderPokemonList }
+        </div>
       </div>
     );
   }

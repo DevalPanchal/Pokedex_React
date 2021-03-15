@@ -1,20 +1,11 @@
 import React from 'react';
 
-function handlePokemonClick(e) {
-    if (!e.target) {
-      return;
-    }
-
-    let pokemonFetchName = e.target.textContent;
-    return pokemonFetchName;
-}
-
-export default function Pokemon({ pokemon }) {
+export default function Pokemon({ pokemonList }) {
     return (
-        <div>
-            {pokemon.map(p => (
-                <div key={p.name} onClick={handlePokemonClick}>{p.name}</div>
-            ))}
+        <div key={pokemonList.id}>
+            <div>{pokemonList.name}</div>
+            <div>{pokemonList.id}</div>
+            <div>{pokemonList.height}</div>
         </div>
     )
 }
