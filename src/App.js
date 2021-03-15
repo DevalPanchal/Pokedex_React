@@ -1,53 +1,34 @@
-import React, { useState, useEffect } from "react";
-import Pokemon from './Components/Pokemon';
+import React, { Component } from "react";
 
-function App() {
-  const url = "https://pokeapi.co/api/v2/pokemon/";
 
-  const [pokemon, setPokemon] = useState([]);
-  const [currentUrl, setCurrentUrl] = useState(url);
-  const [pokemonData, setPokemonData] = useState([]);
-
-  useEffect(() => {
-    try {
-      async function fetchPokemonList(url) {
-        let response = await fetch(url);
-        let data = await response.json();
-
-        setPokemon(data.results);
-        return data;
-      }
-      fetchPokemonList(currentUrl);
-      
-    } catch (err) {
-      console.error(err);
+class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      pokemonList: []
     }
-  }, [currentUrl]);
+  }
 
-  // function fetchPokemonData() {
-  //   pokemon.map(async p => {
-  //     let response = await fetch(p.url);
-  //     let data = await response.json();
+  componentDidMount() {
+    const url = "https://pokeapi.co/api/v2/pokemon/";
+    fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      if (data) {
+        this.setState({pokemonList: data.results}, () => {})
+      }
+    })
+    .catch(err => console.err(err));
+  }
 
-  //     setPokemonData(data);
-  //     return;
-  //   });
-  //   // 1. map over [pokemon]
-  //   // 2.   fetch pokemon's url
-  //   // 3.   make a temporary array
-  //   // 4.   push fetched data to array
-  //   // 5.   [setPokemonData] to the array
-  //   // 6. complete
-  // }
-  // fetchPokemonData();
-  return (
-    <div>
-      {/* <Pokemon pokemon={ pokemon } /> */}
-      {pokemon.map(p => (
-        <div key={ p.name }>{ p.name }</div>
-      ))}
-    </div>
-  );
+  render() {
+    return (
+      <div>
+        <h1>Pokedex</h1>
+      </div>
+    );
+  }
+
 }
 
 export default App;
