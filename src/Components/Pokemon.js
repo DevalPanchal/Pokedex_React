@@ -2,9 +2,9 @@ import React from 'react';
 
 export default function Pokemon({ pokemon }) {
     return (
-        <div key={pokemon.id}>
-          <div ><b>{pokemon.name}</b></div>
-          <div >          
+        <div className="pokemon-container" key={pokemon.id}>
+          <div className="pokemon-wrapper"><b>{pokemon.name}</b></div>
+          <div className="pokemon-info">          
             <h6 >Id: {pokemon.id}</h6>  
             <h6 >Height: {pokemon.height}</h6>  
             <h6 >Weight: {pokemon.weight}</h6>  

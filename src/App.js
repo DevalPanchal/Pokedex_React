@@ -1,6 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import Pokemon from './Components/Pokemon'
+import './stylesheet/style.css'
 
 const url = "https://pokeapi.co/api/v2/pokemon/";
 
@@ -18,14 +19,6 @@ class App extends Component {
     this.handlePreviousPageClick = this.handlePreviousPageClick.bind(this);
   }
 
-  handleNextPageClick() {
-    this.setState({ currentPageUrl: this.state.nextPageUrl });
-  }
-
-  handlePreviousPageClick() {
-    this.setState({ currentPageUrl: this.state.nextPageUrl });
-  }
-
   componentDidMount() {
     this.getPokemon(this.state.currentUrl);
   }
@@ -38,7 +31,7 @@ class App extends Component {
       if (data) {
         console.log(data);
         this.setState({ nextPageUrl: data.next, previousPageUrl: data.previous });
-
+        
         console.log(this.state.nextPageUrl);
         console.log(this.state.previousPageUrl);
 
@@ -66,10 +59,16 @@ class App extends Component {
     }
   }
 
-  render() {
-    const { pokemonList, pokemonData } = this.state;
+  handleNextPageClick() {
+    this.setState({ currentPageUrl: this.state.nextPageUrl });
+  }
 
-    
+  handlePreviousPageClick() {
+    this.setState({ currentPageUrl: this.state.nextPageUrl });
+  }
+
+  render() {
+    const { pokemonData, previousPageUrl, nextPageUrl, currentUrl } = this.state;
 
     const displayPokemon = pokemonData.map((pokemon, index) => {
       return (
@@ -77,11 +76,25 @@ class App extends Component {
       );
     });
 
+    // if (previousPageUrl) {
+    //   return (
+    //     <button onClick={this.handlePreviousPageClick}>Previous</button>
+    //   );
+    // }
+
+    // if (nextPageUrl) {
+    //   return (
+    //     <button onClick={this.handleNextPageClick}>Next</button>
+    //   );
+    // }
+
     return (
-      <div>
-        <div>
+      <div className="pokemons">
+        <div className="pokemon-display">
           { displayPokemon }
         </div>
+        { previousPageUrl && <button onClick={this.handlePreviousPageClick}>Previous</button>}
+        { nextPageUrl && <button onClick={this.handleNextPageClick}>Next</button>}
       </div>
     );
   }
