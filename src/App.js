@@ -30,6 +30,7 @@ class App extends Component {
 
       if (data) {
         console.log(data);
+        
         this.setState({ nextPageUrl: data.next, previousPageUrl: data.previous });
         
         console.log(this.state.nextPageUrl);
@@ -60,11 +61,15 @@ class App extends Component {
   }
 
   handleNextPageClick() {
-    this.setState({ currentPageUrl: this.state.nextPageUrl });
+    this.setState({ currentPageUrl: this.state.nextPageUrl }, () => {
+      console.log(this.state.currentPageUrl);
+    });
   }
 
   handlePreviousPageClick() {
-    this.setState({ currentPageUrl: this.state.nextPageUrl });
+    this.setState({ currentPageUrl: this.state.nextPageUrl }, () => {
+      console.log(this.state.previousPageUrl);
+    });
   }
 
   render() {
@@ -75,18 +80,6 @@ class App extends Component {
         <Pokemon pokemon={pokemon} />
       );
     });
-
-    // if (previousPageUrl) {
-    //   return (
-    //     <button onClick={this.handlePreviousPageClick}>Previous</button>
-    //   );
-    // }
-
-    // if (nextPageUrl) {
-    //   return (
-    //     <button onClick={this.handleNextPageClick}>Next</button>
-    //   );
-    // }
 
     return (
       <div className="pokemons">
