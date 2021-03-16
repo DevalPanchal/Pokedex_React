@@ -2,14 +2,17 @@ import React from 'react';
 import { Component } from 'react';
 import Pokemon from './Components/Pokemon'
 
-const url = "https://pokeapi.co/api/v2/pokemon";
+const url = "https://pokeapi.co/api/v2/pokemon/";
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      pokemons: [],
-      pokemonDetails: [],
+      currentUrl: url,
+      nextPageUrl: "",
+      previousPageUrl: "",
+      pokemonList: [],
+      pokemonData: []
     }
   }
 
@@ -23,16 +26,20 @@ class App extends Component {
       let data = await response.json();
 
       if (data) {
-        this.setState({ pokemons: data.results }, () => {
-          this.state.pokemons.map(async pokemon => {
+        console.log(data);
+        this.setState({ nextPageUrl: data.next, previousPageUrl: data.previous });
+        console.log(this.state.nextPageUrl);
+        console.log(this.state.previousPageUrl);
+        this.setState({ pokemonList: data.results }, () => {
+          this.state.pokemonList.map(async pokemon => {
             try {
               let response = await fetch(pokemon.url);
               let data = await response.json();
 
               if (data) {
-                var temp = this.state.pokemonDetails;
+                var temp = this.state.pokemonData;
                 temp.push(data);
-                this.setState({ pokemonDetails: temp })
+                this.setState({ pokemonData: temp })
               }
             } catch (error) {
               console.error(error);
@@ -48,20 +55,25 @@ class App extends Component {
   }
 
   render() {
-    const { pokemonDetails } = this.state;
+    const { pokemonList, pokemonData } = this.state;
 
-    const renderedPokemonList = pokemonDetails.map((pokemon, index) => {
-      return (<Pokemon pokemon={pokemon} />);
+    
+
+    const displayPokemon = pokemonData.map((pokemon, index) => {
+      return (
+        <Pokemon pokemon={pokemon} />
+      );
     });
 
     return (
-      <div className="container">
-        <div className="card-columns">
-          {renderedPokemonList}
+      <div>
+        <div>
+          { displayPokemon }
         </div>
       </div>
     );
   }
+
 }
 
 export default App;
