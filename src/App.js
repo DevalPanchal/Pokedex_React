@@ -22,6 +22,9 @@ class App extends Component {
   componentDidMount() {
     this.getPokemon(this.state.currentUrl);
   }
+  componentDidUpdate() {
+    console.log(this.state.currentUrl);
+  }
 
   async getPokemon(url) {
     try {
