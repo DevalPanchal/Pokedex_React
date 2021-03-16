@@ -1,56 +1,60 @@
-import React, { Component } from "react";
-import Pokemon from './Components/Pokemon';
+import React from 'react';
+import {Component} from 'react';
+import Pokemon from './Components/Pokemon'
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      pokemonList: [],
-      pokemonData: []
-    }
+      pokemons : [],
+      pokemonDetails : [],
+    }    
   }
 
   componentDidMount() {
-    const url = "https://pokeapi.co/api/v2/pokemon/";
+    this.getMorePokemon();
+  }
+
+  getMorePokemon() {
+    let url = "https://pokeapi.co/api/v2/pokemon?offset=" + this.state.offset + "&limit=" + this.state.loadNumber;
     fetch(url)
     .then(response => response.json())
     .then(data => {
       if (data) {
-        this.setState({pokemonList: data.results}, () => {
-          this.state.pokemonList.map(pokemon => {
+        this.setState({pokemons : data.results}, () => {
+          this.state.pokemons.map(pokemon => {
             fetch(pokemon.url)
             .then(response => response.json())
             .then(data => {
               if (data) {
-                var temp = this.state.pokemonData;
-                temp.push(data);
-                this.setState({ pokemonData: temp });
-              }
+                var temp = this.state.pokemonDetails
+                temp.push(data)
+                this.setState({pokemonDetails: temp})
+              }            
             })
-            .catch(err => console.error(err));
+            .catch(console.log)
           })
-        })
+        })        
       }
     })
-    .catch(err => console.error(err));
+    .catch(console.log)
   }
 
   render() {
-    const { pokemonList } = this.state;
-    const renderPokemonList = pokemonList.map((pokemon, index) => {
-      return (
-        <Pokemon pokemonList={pokemonList}/>
-      );
-    })
+    const {pokemonDetails} = this.state;
+
+    const renderedPokemonList = pokemonDetails.map((pokemon, index) => {
+      return (<Pokemon pokemon={pokemon} />);
+    });
+
     return (
-      <div>
-        <div>
-          { renderPokemonList }
+      <div className="container">
+        <div className="card-columns">
+          { renderedPokemonList }
         </div>
       </div>
     );
   }
-
 }
 
 export default App;
