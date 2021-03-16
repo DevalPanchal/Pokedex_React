@@ -1,47 +1,54 @@
 import React from 'react';
-import {Component} from 'react';
+import { Component } from 'react';
 import Pokemon from './Components/Pokemon'
+
+const url = "https://pokeapi.co/api/v2/pokemon";
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      pokemons : [],
-      pokemonDetails : [],
-    }    
+      pokemons: [],
+      pokemonDetails: [],
+    }
   }
 
   componentDidMount() {
-    this.getMorePokemon();
+    this.getPokemon(url);
   }
 
-  getMorePokemon() {
-    let url = "https://pokeapi.co/api/v2/pokemon?offset=" + this.state.offset + "&limit=" + this.state.loadNumber;
-    fetch(url)
-    .then(response => response.json())
-    .then(data => {
+  async getPokemon(url) {
+    try {
+      let response = await fetch(url);
+      let data = await response.json();
+
       if (data) {
-        this.setState({pokemons : data.results}, () => {
-          this.state.pokemons.map(pokemon => {
-            fetch(pokemon.url)
-            .then(response => response.json())
-            .then(data => {
+        this.setState({ pokemons: data.results }, () => {
+          this.state.pokemons.map(async pokemon => {
+            try {
+              let response = await fetch(pokemon.url);
+              let data = await response.json();
+
               if (data) {
-                var temp = this.state.pokemonDetails
-                temp.push(data)
-                this.setState({pokemonDetails: temp})
-              }            
-            })
-            .catch(console.log)
+                var temp = this.state.pokemonDetails;
+                temp.push(data);
+                this.setState({ pokemonDetails: temp })
+              }
+            } catch (error) {
+              console.error(error);
+            }
+
           })
-        })        
+        })
       }
-    })
-    .catch(console.log)
+
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   render() {
-    const {pokemonDetails} = this.state;
+    const { pokemonDetails } = this.state;
 
     const renderedPokemonList = pokemonDetails.map((pokemon, index) => {
       return (<Pokemon pokemon={pokemon} />);
@@ -50,7 +57,7 @@ class App extends Component {
     return (
       <div className="container">
         <div className="card-columns">
-          { renderedPokemonList }
+          {renderedPokemonList}
         </div>
       </div>
     );
