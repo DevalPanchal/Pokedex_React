@@ -14,10 +14,20 @@ class App extends Component {
       pokemonList: [],
       pokemonData: []
     }
+    this.handleNextPageClick = this.handleNextPageClick.bind(this);
+    this.handlePreviousPageClick = this.handlePreviousPageClick.bind(this);
+  }
+
+  handleNextPageClick() {
+    this.setState({ currentPageUrl: this.state.nextPageUrl });
+  }
+
+  handlePreviousPageClick() {
+    this.setState({ currentPageUrl: this.state.nextPageUrl });
   }
 
   componentDidMount() {
-    this.getPokemon(url);
+    this.getPokemon(this.state.currentUrl);
   }
 
   async getPokemon(url) {
@@ -28,8 +38,10 @@ class App extends Component {
       if (data) {
         console.log(data);
         this.setState({ nextPageUrl: data.next, previousPageUrl: data.previous });
+
         console.log(this.state.nextPageUrl);
         console.log(this.state.previousPageUrl);
+
         this.setState({ pokemonList: data.results }, () => {
           this.state.pokemonList.map(async pokemon => {
             try {
