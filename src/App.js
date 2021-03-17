@@ -22,8 +22,10 @@ class App extends Component {
   componentDidMount() {
     this.getPokemon(this.state.currentUrl);
   }
-  componentDidUpdate() {
-    console.log(this.state.currentUrl);
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.currentUrl !== this.state.currentUrl) {
+      console.log('pokemon url has changed');
+    }
   }
 
   async getPokemon(url) {
@@ -33,9 +35,7 @@ class App extends Component {
 
       if (data) {
         console.log(data);
-        
         this.setState({ nextPageUrl: data.next, previousPageUrl: data.previous });
-        
         console.log(this.state.nextPageUrl);
         console.log(this.state.previousPageUrl);
 
@@ -64,12 +64,14 @@ class App extends Component {
   }
 
   handleNextPageClick() {
+    console.log(this.state.nextPageUrl);
     this.setState({ currentPageUrl: this.state.nextPageUrl }, () => {
       console.log(this.state.currentPageUrl);
     });
   }
 
   handlePreviousPageClick() {
+    console.log(this.state.previousPageUrl);
     this.setState({ currentPageUrl: this.state.nextPageUrl }, () => {
       console.log(this.state.previousPageUrl);
     });
@@ -89,7 +91,7 @@ class App extends Component {
         <div className="pokemon-display">
           { displayPokemon }
         </div>
-        { previousPageUrl && <button onClick={this.handlePreviousPageClick}>Previous</button>}
+        { previousPageUrl && <button onClick={() => this.setState({ currentPageUrl: nextPageUrl })}>Previous</button>}
         { nextPageUrl && <button onClick={this.handleNextPageClick}>Next</button>}
       </div>
     );
