@@ -13,7 +13,8 @@ class App extends Component {
       nextPageUrl: "",
       previousPageUrl: "",
       pokemonList: [],
-      pokemonData: []
+      pokemonData: [],
+    
     }
     this.handleNextPageClick = this.handleNextPageClick.bind(this);
     this.handlePreviousPageClick = this.handlePreviousPageClick.bind(this);
@@ -35,11 +36,9 @@ class App extends Component {
 
       if (data) {
         console.log(data);
-        this.setState({ nextPageUrl: data.next, previousPageUrl: data.previous });
-        console.log(this.state.nextPageUrl);
-        console.log(this.state.previousPageUrl);
 
-        this.setState({ pokemonList: data.results }, () => {
+
+        this.setState({ pokemonList: data.results, nextPageUrl: data.next, previousPageUrl: data.previous }, () => {
           this.state.pokemonList.map(async pokemon => {
             try {
               let response = await fetch(pokemon.url);
@@ -57,32 +56,31 @@ class App extends Component {
           })
         })
       }
-
     } catch (error) {
       console.error(error);
     }
   }
 
   handleNextPageClick() {
-    console.log(this.state.nextPageUrl);
     this.setState({ currentPageUrl: this.state.nextPageUrl }, () => {
-      console.log(this.state.currentPageUrl);
+    
     });
   }
 
   handlePreviousPageClick() {
-    console.log(this.state.previousPageUrl);
     this.setState({ currentPageUrl: this.state.nextPageUrl }, () => {
-      console.log(this.state.previousPageUrl);
+      
     });
   }
 
+
+
   render() {
-    const { pokemonData, previousPageUrl, nextPageUrl, currentUrl } = this.state;
+    const { pokemonData, previousPageUrl, nextPageUrl } = this.state;
 
     const displayPokemon = pokemonData.map((pokemon, index) => {
       return (
-        <Pokemon pokemon={pokemon} />
+        <Pokemon pokemon={pokemon} key={index}/>
       );
     });
 
@@ -91,12 +89,11 @@ class App extends Component {
         <div className="pokemon-display">
           { displayPokemon }
         </div>
-        { previousPageUrl && <button onClick={() => this.setState({ currentPageUrl: nextPageUrl })}>Previous</button>}
+        { previousPageUrl && <button onClick={this.handlePreviousPageClick}>Previous</button>}
         { nextPageUrl && <button onClick={this.handleNextPageClick}>Next</button>}
       </div>
     );
   }
-
 }
 
 export default App;
