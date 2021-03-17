@@ -14,7 +14,6 @@ class App extends Component {
       previousPageUrl: "",
       pokemonList: [],
       pokemonData: [],
-    
     }
     this.handleNextPageClick = this.handleNextPageClick.bind(this);
     this.handlePreviousPageClick = this.handlePreviousPageClick.bind(this);
@@ -23,11 +22,16 @@ class App extends Component {
   componentDidMount() {
     this.getPokemon(this.state.currentUrl);
   }
+
+  componentWillUnmount() {}
+
   componentDidUpdate(prevProps, prevState) {
     if (prevState.currentUrl !== this.state.currentUrl) {
-      console.log('pokemon url has changed');
+      this.getPokemon(this.state.currentUrl);
     }
   }
+
+  
 
   async getPokemon(url) {
     try {
@@ -35,9 +39,6 @@ class App extends Component {
       let data = await response.json();
 
       if (data) {
-        console.log(data);
-
-
         this.setState({ pokemonList: data.results, nextPageUrl: data.next, previousPageUrl: data.previous }, () => {
           this.state.pokemonList.map(async pokemon => {
             try {
@@ -61,19 +62,13 @@ class App extends Component {
     }
   }
 
-  handleNextPageClick() {
-    this.setState({ currentPageUrl: this.state.nextPageUrl }, () => {
-    
-    });
+  handleNextPageClick = () => {
+    this.setState({ currentUrl: this.state.nextPageUrl });
   }
 
-  handlePreviousPageClick() {
-    this.setState({ currentPageUrl: this.state.nextPageUrl }, () => {
-      
-    });
+  handlePreviousPageClick = () => {
+    this.setState({ currentUrl: this.state.previousPageUrl });
   }
-
-
 
   render() {
     const { pokemonData, previousPageUrl, nextPageUrl } = this.state;
