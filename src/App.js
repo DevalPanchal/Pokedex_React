@@ -23,15 +23,14 @@ class App extends Component {
     this.getPokemon(this.state.currentUrl);
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() { 
+  }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.currentUrl !== this.state.currentUrl) {
       this.getPokemon(this.state.currentUrl);
     }
   }
-
-  
 
   async getPokemon(url) {
     try {
