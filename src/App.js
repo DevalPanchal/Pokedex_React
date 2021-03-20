@@ -10,21 +10,39 @@ function App() {
   const [currentPageUrl, setCurrentPageUrl] = useState(url);
   const [nextPageUrl, setNextPageUrl] = useState("");
   const [previousPageUrl, setpreviousPageUrl] = useState("");
+  const [pokemonData, setPokemonData] = useState([]);
 
   useEffect(() => {
     fetchPokemon(currentPageUrl);
   }, [currentPageUrl]);
 
   async function fetchPokemon(url) {
-    setLoading(false);
-    let response = await fetch(url);
-    let data = await response.json();
+    try {
+      setLoading(false);
+      let response = await fetch(url);
+      let data = await response.json();
+  
+      if (data) {
+        setPokemon(data.results);
+        setNextPageUrl(data.next);
+        setpreviousPageUrl(data.previous);
+        pokemon.map(async poke => {
+          try {
+            let response = await fetch(poke.url);
+            let data = await response.json();
 
-    if (data) {
-      setPokemon(data.results);
-      setNextPageUrl(data.next);
-      setpreviousPageUrl(data.previous);
-      
+            if(data) {
+              var temp = pokemonData;
+              temp.push(data);
+              setPokemonData(temp);
+            }
+          } catch(error) {
+            console.error(error);
+          }
+        })
+      }
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -38,11 +56,14 @@ function App() {
 
   if (loading) return <h1>loading...</h1>;
 
-
-
   return (
     <div>
-      <Pokemon pokemon={ pokemon } />
+      {/* <Pokemon pokemon={ pokemonData } /> */}
+      <div>
+        {pokemonData.map((poke, index) => (
+          <Pokemon pokemon={poke} key={index}/>
+        ))}
+      </div>
       {previousPageUrl && <button onClick={goToPreviousPage}>previous</button>}
       {nextPageUrl && <button onClick={goToNextPage}>next</button>}
     </div>
