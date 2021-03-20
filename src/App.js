@@ -3,6 +3,7 @@ import Pokemon from "./Components/Pokemon";
 import "./stylesheet/style.css";
 
 const url = "https://pokeapi.co/api/v2/pokemon/";
+const cachePokemon = {};
 
 function App() {
   const [pokemon, setPokemon] = useState([]);
@@ -26,25 +27,13 @@ function App() {
         setPokemon(data.results);
         setNextPageUrl(data.next);
         setpreviousPageUrl(data.previous);
-        pokemon.map(async poke => {
-          try {
-            let response = await fetch(poke.url);
-            let data = await response.json();
-
-            if(data) {
-              var temp = pokemonData;
-              temp.push(data);
-              setPokemonData(temp);
-            }
-          } catch(error) {
-            console.error(error);
-          }
-        })
       }
     } catch (error) {
       console.error(error);
     }
   }
+
+  
 
   function goToNextPage() {
     setCurrentPageUrl(nextPageUrl);
@@ -58,12 +47,7 @@ function App() {
 
   return (
     <div>
-      {/* <Pokemon pokemon={ pokemonData } /> */}
-      <div>
-        {pokemonData.map((poke, index) => (
-          <Pokemon pokemon={poke} key={index}/>
-        ))}
-      </div>
+      <Pokemon pokemon={ pokemon } />
       {previousPageUrl && <button onClick={goToPreviousPage}>previous</button>}
       {nextPageUrl && <button onClick={goToNextPage}>next</button>}
     </div>
