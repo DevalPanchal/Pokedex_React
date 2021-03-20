@@ -1,79 +1,93 @@
-import React, { Component } from 'react';
-import axios from 'axios';
+import React from 'react';
+import { Component } from 'react';
+import Pokemon from './Components/Pokemon'
+import './stylesheet/style.css'
 
-const url = "https://pokeapi.co/api/v2/pokemon";  
+const url = "https://pokeapi.co/api/v2/pokemon/";
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      pokemon: [],
+      currentUrl: url,
+      nextPageUrl: "",
+      previousPageUrl: "",
+      pokemonList: [],
       pokemonData: [],
-      currentPageUrl: url,
-      nextPageUrl: '',
-      previousPageUrl: ''
     }
-    //this.handleClick = this.handleClick.bind(this);
+    this.handleNextPageClick = this.handleNextPageClick.bind(this);
+    this.handlePreviousPageClick = this.handlePreviousPageClick.bind(this);
   }
 
   componentDidMount() {
-    // fetch data from the url
-    fetch(url)
-    // get the data in json form
-    .then(res => res.json())
-    .then(data => {
-      // set the individual pokemon state to data.results
-      this.setState( { 
-        pokemon: data.results, 
-        nextPageUrl: data.next, 
-        previousPageUrl: data.previous 
-      }, () => {
-        // loop through each pokemon
-        this.state.pokemon.map((p) => {
-          // fetch the url associated in their object
-          fetch(p.url)
-          // get the data in json form
-          .then(res => res.json())
-          .then(pokeData => {
-            // make a temporary variable of array data type
-            var details = this.state.pokemonData;
-            // push the individual pokemon data to the temporary array
-            details.push(pokeData);
-            // set the state for the pokemonData ([]) to the temporary array
-            this.setState( { pokemonData: details } );
-          }) 
-          .catch(err => console.error(err));
-        })
-      } )
-      console.log(data.next);
-    })
-    
-    .catch(err => console.error(err));
+    this.getPokemon(this.state.currentUrl);
   }
-  
-  // handleClick() {
-  //   this.setState({ currentPageUrl: nextPageUrl });
-  // }
-  
+
+  componentWillUnmount() { 
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.currentUrl !== this.state.currentUrl) {
+      this.getPokemon(this.state.currentUrl);
+    }
+  }
+
+  async getPokemon(url) {
+    try {
+      let response = await fetch(url);
+      let data = await response.json();
+
+      if (data) {
+        this.setState({ pokemonList: data.results, nextPageUrl: data.next, previousPageUrl: data.previous }, () => {
+          this.state.pokemonList.map(async pokemon => {
+            try {
+              let response = await fetch(pokemon.url);
+              let data = await response.json();
+
+              if (data) {
+                var temp = this.state.pokemonData;
+                temp.push(data);
+                this.setState({ pokemonData: temp })
+              }
+            } catch (error) {
+              console.error(error);
+            }
+
+          })
+        })
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  handleNextPageClick = () => {
+    this.setState({ currentUrl: this.state.nextPageUrl });
+  }
+
+  handlePreviousPageClick = () => {
+    this.setState({ currentUrl: this.state.previousPageUrl });
+  }
+
   render() {
-    
-    const { pokemonData } = this.state;
+    const { pokemonData, previousPageUrl, nextPageUrl } = this.state;
+
+    const displayPokemon = pokemonData.map((pokemon, index) => {
+      return (
+        <Pokemon pokemon={pokemon} key={index}/>
+      );
+    });
 
     return (
-      <div>
-        {pokemonData.map((pokemon, _id) => (
-          <div key={pokemon.name}>{ pokemon.name }
-            <div></div>
-          </div>
-          
-        ))}
-        {/* <button onClick={ this.handleClick }>Previous</button> */}
-        {/* <button onClick={ this.goToNextPage }>Next</button> */}
+      <div className="pokemons">
+        <div className="pokemon-display">
+          { displayPokemon }
+        </div>
+        { previousPageUrl && <button onClick={this.handlePreviousPageClick}>Previous</button>}
+        { nextPageUrl && <button onClick={this.handleNextPageClick}>Next</button>}
       </div>
     );
   }
-    
-  
 }
 
 export default App;
